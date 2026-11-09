@@ -1,0 +1,8 @@
+langchain
+langgraph
+langsmith
+python-dotenv
+langchain-google-genai
+langchain-groq
+langchain-mcp-adapters
+mcp

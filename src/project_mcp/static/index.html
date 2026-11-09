@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Price Finder</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#f7f6f3; --panel:#ffffff; --side:#efede8; --hover:#e6e3dc;
+  --text:#1f2421; --muted:#6b7370; --line:#e1ded7;
+  --accent:#0f766e; --accent-text:#ffffff;
+  --user:#0f766e; --user-text:#ffffff; --bot:#ffffff; --err:#b42318; --code:#efede8;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#14171a; --panel:#1b1f23; --side:#101315; --hover:#1a1f22;
+    --text:#e8ebe9; --muted:#8e9894; --line:#2a3035;
+    --accent:#2dd4bf; --accent-text:#052e2a;
+    --user:#115e59; --user-text:#f0fdfa; --bot:#1f2428; --err:#f97066; --code:#2a3035;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{display:flex;height:100dvh}
+
+/* ---------- sidebar: previous conversations ---------- */
+.sidebar{width:280px;flex:none;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px;gap:8px}
+.side-label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:2px 10px}
+.threads{list-style:none;margin:0;padding:0;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:2px}
+.threads li{position:relative}
+.thread{width:100%;text-align:left;background:none;border:0;border-radius:9px;padding:9px 36px 9px 10px;display:block}
+.thread:hover{background:var(--hover)}
+.thread.active{background:var(--hover);box-shadow:inset 3px 0 0 var(--accent)}
+.thread .t{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thread .s{display:block;font-size:12px;color:var(--muted)}
+.del{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:0;border-radius:7px;background:none;color:var(--muted);font-size:18px;line-height:1;opacity:0;display:flex;align-items:center;justify-content:center}
+.threads li:hover .del,.del:focus-visible,.thread.active + .del{opacity:1}
+.del:hover{color:var(--err);background:var(--panel)}
+@media (hover: none), (max-width: 760px){ .del{opacity:1} }   /* no hover on touch screens */
+.no-threads{color:var(--muted);font-size:13px;padding:8px 10px}
+
+/* ---------- main ---------- */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.top .left{display:flex;align-items:center;gap:10px;min-width:0}
+.brand{font-weight:650;font-size:16px;letter-spacing:.2px}
+.icon-btn{display:none;background:none;border:1px solid var(--line);border-radius:8px;width:36px;height:36px;font-size:18px;align-items:center;justify-content:center}
+.new-btn{background:var(--accent);color:var(--accent-text);border:0;border-radius:10px;padding:8px 14px;font-weight:600;white-space:nowrap}
+.new-btn:hover{filter:brightness(1.08)}
+
+.messages{flex:1;overflow-y:auto;padding:22px 16px}
+.col{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:86%;padding:10px 14px;border-radius:14px;overflow-wrap:anywhere}
+.msg.user{align-self:flex-end;background:var(--user);color:var(--user-text);border-bottom-right-radius:4px;white-space:pre-wrap}
+.msg.assistant{align-self:flex-start;background:var(--bot);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg p{margin:0 0 .6em}.msg p:last-child{margin-bottom:0}
+.msg ul,.msg ol{margin:.2em 0 .6em;padding-left:1.3em}
+.msg li{margin:.25em 0}
+.msg h4{margin:.4em 0 .3em;font-size:1em}
+.msg a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+.msg code{background:var(--code);padding:1px 5px;border-radius:5px;font-size:.92em}
+
+.typing{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:b 1.2s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media (prefers-reduced-motion: reduce){.dots i{animation:none;opacity:.6}}
+
+.error{align-self:flex-start;border:1px solid var(--err);color:var(--err);border-radius:12px;padding:10px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--panel)}
+.error button{background:none;border:1px solid currentColor;color:inherit;border-radius:8px;padding:4px 10px}
+
+.approval{align-self:flex-start;max-width:86%;background:var(--panel);border:1px solid var(--accent);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;overflow-wrap:anywhere}
+.approval .title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:650}
+.approval ul{margin:0;padding-left:1.2em}
+.approval li{margin:.2em 0}
+.approval .actions{display:flex;gap:8px;flex-wrap:wrap}
+.approval .yes{background:var(--accent);color:var(--accent-text);border:0;border-radius:9px;padding:7px 14px;font-weight:600}
+.approval .no{background:none;border:1px solid var(--line);border-radius:9px;padding:7px 14px}
+.approval .no:hover{border-color:var(--accent)}
+.approval .note{color:var(--muted);font-size:13px}
+.approval.answered{border-color:var(--line);opacity:.8}
+
+.empty{margin:12vh auto 0;text-align:center;max-width:520px;padding:0 8px}
+.empty h1{font-size:24px;margin:0 0 6px}
+.empty p{color:var(--muted);margin:0 0 18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- composer ---------- */
+.composer{padding:10px 16px 16px;background:var(--bg)}
+.composer form{max-width:780px;margin:0 auto;display:flex;gap:8px;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px}
+.composer form:focus-within{border-color:var(--accent)}
+textarea{flex:1;resize:none;border:0;background:none;color:inherit;font:inherit;max-height:160px;padding:6px 8px;outline:none}
+textarea:focus-visible{outline:none}
+#send{background:var(--accent);color:var(--accent-text);border:0;border-radius:10px;padding:8px 16px;font-weight:600}
+#send:disabled{opacity:.45;cursor:not-allowed}
+.hint{max-width:780px;margin:6px auto 0;color:var(--muted);font-size:12px;text-align:center}
+
+/* ---------- mobile: sidebar slides in ---------- */
+.scrim{display:none}
+@media (max-width: 760px){
+  .icon-btn{display:inline-flex}
+  .sidebar{position:fixed;inset:0 auto 0 0;z-index:20;transform:translateX(-100%);transition:transform .2s;width:min(300px,86vw)}
+  .sidebar.open{transform:none}
+  .scrim.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:10}
+  .msg,.approval{max-width:94%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Previous conversations">
+    <div class="side-label">Conversations</div>
+    <ul class="threads" id="threadList"></ul>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main">
+    <header class="top">
+      <div class="left">
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="Show previous conversations">☰</button>
+        <div class="brand">Price Finder</div>
+      </div>
+      <button class="new-btn" id="newChat" type="button">＋ New conversation</button>
+    </header>
+    <div class="messages" id="messages" aria-live="polite"><div class="col" id="col"></div></div>
+    <div class="composer">
+      <form id="composer" autocomplete="off">
+        <textarea id="input" rows="1" placeholder="Search a product, e.g. iPhone 15 128GB" aria-label="Message"></textarea>
+        <button id="send" type="submit">Send</button>
+      </form>
+      <div class="hint">Enter to send · Shift+Enter for a new line · Prices can change, check the store before buying</div>
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* "" = same origin (the page is served by your FastAPI app at /ui). */
+const API_BASE = "";
+
+const $ = (s) => document.querySelector(s);
+const els = {
+  sidebar: $("#sidebar"), scrim: $("#scrim"), list: $("#threadList"), messages: $("#messages"), col: $("#col"),
+  input: $("#input"), send: $("#send"), form: $("#composer"), newBtn: $("#newChat"), menu: $("#menuBtn"),
+};
+
+/* One conversation = one thread. threadId is null for a brand-new chat: the server creates the thread for the
+   first message and sends its id back. Clicking a conversation in the sidebar sets threadId to that chat, so the
+   next message continues it. `view` changes whenever you switch chats; answers still arriving for a chat you left
+   are ignored on screen (the server finishes them and saves them, so they are there when you come back).
+   `inflight` = chats that are still being answered. */
+const state = { threadId: null, threads: [], sending: false, view: 0, inflight: new Set(), pending: null };
+/* What you choose on an approval card is written into the chat as your message. Keep these identical to
+   APPROVE_TEXT / DECLINE_TEXT in chatbot.py so a reloaded chat reads the same. */
+const APPROVE_TEXT = "Yes, show me alternatives.", DECLINE_TEXT = "No thanks.";
+
+/* ---------- safe mini-markdown (escapes everything first; only http(s) links) ---------- */
+function esc(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function inline(raw){
+  const stash = [];
+  const keep = (html) => "\u0000" + (stash.push(html) - 1) + "\u0000";
+  const link = (u, t) => keep('<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + t + "</a>");
+  let s = esc(raw);
+  s = s.replace(/`([^`]+)`/g, (_, c) => keep("<code>" + c + "</code>"));
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_, t, u) => link(u, t));
+  s = s.replace(/(https?:\/\/[^\s<)]+?)(?=[.,;:!?]*(?:\s|$))/g, (u) => link(u, u));
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>");
+  return s.replace(/\u0000(\d+)\u0000/g, (_, i) => stash[+i]);
+}
+function renderMarkdown(text){
+  const lines = String(text || "").replace(/\r/g, "").split("\n");
+  let html = "", list = null, para = [];
+  const flush = () => { if (para.length) { html += "<p>" + para.map(inline).join("<br>") + "</p>"; para = []; } };
+  const close = () => { if (list) { html += "</" + list + ">"; list = null; } };
+  const item = (kind, body) => { flush(); if (list !== kind) { close(); html += "<" + kind + ">"; list = kind; } html += "<li>" + inline(body) + "</li>"; };
+  for (const line of lines) {
+    let m;
+    if ((m = line.match(/^\s*[*-]\s+(.*)$/))) item("ul", m[1]);
+    else if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) item("ol", m[1]);
+    else if ((m = line.match(/^#{1,6}\s+(.*)$/))) { flush(); close(); html += "<h4>" + inline(m[1]) + "</h4>"; }
+    else if (!line.trim()) { flush(); close(); }
+    else { close(); para.push(line); }
+  }
+  flush(); close();
+  return html;
+}
+
+/* ---------- network ---------- */
+async function failure(res){
+  let detail = res.statusText || "Request failed";
+  try { const j = await res.json(); if (j && j.detail) detail = typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail); } catch {}
+  const err = new Error(detail); err.status = res.status; return err;
+}
+async function getJSON(path){
+  const res = await fetch(API_BASE + path);
+  if (!res.ok) throw await failure(res);
+  return res.json();
+}
+/* Server-Sent Events over POST (EventSource can't POST, so we read the stream ourselves). */
+async function readEvents(res, onEvent){
+  const reader = res.body.getReader(), dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n\n")) >= 0) {
+      const block = buf.slice(0, i); buf = buf.slice(i + 2);
+      const line = block.split("\n").find((l) => l.startsWith("data:"));
+      if (!line) continue;
+      let ev; try { ev = JSON.parse(line.slice(5).trim()); } catch { continue; }
+      onEvent(ev);
+    }
+  }
+}
+
+/* ---------- ui helpers ---------- */
+function ago(ts){
+  const s = Math.max(0, Date.now() / 1000 - ts);
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.floor(s / 60) + " min ago";
+  if (s < 86400) return Math.floor(s / 3600) + " h ago";
+  if (s < 172800) return "yesterday";
+  return new Date(ts * 1000).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+const scrollDown = () => { els.messages.scrollTop = els.messages.scrollHeight; };
+function setBusy(b){ els.send.disabled = b; els.input.disabled = b; if (!b) els.input.focus(); }
+const closeSidebar = () => { els.sidebar.classList.remove("open"); els.scrim.classList.remove("show"); };
+const openSidebar = () => { els.sidebar.classList.add("open"); els.scrim.classList.add("show"); };
+
+function addMessage(role, text){
+  const d = document.createElement("div");
+  d.className = "msg " + role;
+  if (role === "assistant") d.innerHTML = renderMarkdown(text); else d.textContent = text;
+  els.col.appendChild(d); scrollDown(); return d;
+}
+function addTyping(label){
+  const d = document.createElement("div");
+  d.className = "msg assistant typing";
+  d.innerHTML = '<span class="dots"><i></i><i></i><i></i></span><span class="label"></span>';
+  d.querySelector(".label").textContent = label || "Searching stores…";
+  els.col.appendChild(d); scrollDown(); return d;
+}
+function addError(message, onRetry){
+  const d = document.createElement("div");
+  d.className = "error";
+  const span = document.createElement("span"); span.textContent = "Something went wrong: " + message;
+  const b = document.createElement("button"); b.type = "button"; b.textContent = "Retry";
+  b.onclick = () => { d.remove(); onRetry(); };
+  d.append(span, b); els.col.appendChild(d); scrollDown();
+}
+function showEmpty(){
+  const d = document.createElement("div");
+  d.className = "empty"; d.id = "empty";
+  d.innerHTML = "<h1>What are you shopping for?</h1><p>Ask for a product and I’ll look for the lowest price across Indian stores.</p>";
+  const chips = document.createElement("div"); chips.className = "chips";
+  ["iPhone 15 128GB", "Samsung Galaxy S24", "Sony WH-1000XM5"].forEach((q) => {
+    const c = document.createElement("button"); c.type = "button"; c.className = "chip"; c.textContent = q;
+    c.onclick = () => send("Lowest price for " + q);
+    chips.appendChild(c);
+  });
+  d.appendChild(chips); els.col.appendChild(d);
+}
+const removeEmpty = () => { const e = $("#empty"); if (e) e.remove(); };
+
+/* ---------- approval card (human-in-the-loop) ---------- */
+function dismissApproval(note){
+  const card = state.pending;
+  if (!card) return;
+  state.pending = null;
+  card.classList.add("answered");
+  card.querySelector(".actions")?.remove();
+  if (note) { const n = document.createElement("div"); n.className = "note"; n.textContent = note; card.appendChild(n); }
+}
+function showApproval(p){
+  dismissApproval();                                   // only one question at a time
+  const card = document.createElement("div");
+  card.className = "approval"; card.setAttribute("role", "group"); card.setAttribute("aria-label", "Needs your approval");
+  const title = document.createElement("div"); title.className = "title"; title.textContent = "Needs your OK";
+  const msg = document.createElement("div"); msg.textContent = p.message || "Show alternatives?";   // textContent: store text is untrusted
+  card.append(title, msg);
+  if (Array.isArray(p.options) && p.options.length) {
+    const ul = document.createElement("ul");
+    p.options.forEach((o) => { const li = document.createElement("li"); li.textContent = o; ul.appendChild(li); });
+    card.appendChild(ul);
+  }
+  const actions = document.createElement("div"); actions.className = "actions";
+  const yes = document.createElement("button"); yes.type = "button"; yes.className = "yes"; yes.textContent = "Show alternatives";
+  const no = document.createElement("button"); no.type = "button"; no.className = "no"; no.textContent = "No thanks";
+  yes.onclick = () => decide(true); no.onclick = () => decide(false);
+  actions.append(yes, no); card.appendChild(actions);
+  state.pending = card; els.col.appendChild(card); scrollDown(); yes.focus();
+}
+
+/* ---------- sidebar ---------- */
+function renderThreads(){
+  els.list.textContent = "";
+  if (!state.threads.length) {
+    const li = document.createElement("li"); li.className = "no-threads"; li.textContent = "No conversations yet.";
+    els.list.appendChild(li); return;
+  }
+  for (const t of state.threads) {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button"; b.title = t.title;
+    b.className = "thread" + (String(t.thread_id) === state.threadId ? " active" : "");
+    const title = document.createElement("span"); title.className = "t"; title.textContent = t.title;
+    const sub = document.createElement("span"); sub.className = "s"; sub.textContent = t.updated_at ? ago(t.updated_at) : "";
+    b.append(title, sub);
+    b.onclick = () => openThread(t.thread_id);
+    const del = document.createElement("button");
+    del.type = "button"; del.className = "del"; del.title = "Delete conversation"; del.setAttribute("aria-label", "Delete conversation: " + t.title); del.textContent = "×";
+    del.onclick = (e) => { e.stopPropagation(); deleteThread(t); };
+    li.append(b, del); els.list.appendChild(li);
+  }
+}
+async function loadThreads(){
+  try { state.threads = (await getJSON("/threads")).threads || []; } catch { /* keep the previous list */ }
+  renderThreads();
+}
+
+/* ---------- conversations ---------- */
+async function deleteThread(t){
+  if (!confirm("Delete “" + t.title + "”? This can’t be undone.")) return;
+  try {
+    const res = await fetch(API_BASE + "/threads/" + encodeURIComponent(t.thread_id), { method: "DELETE" });
+    if (!res.ok && res.status !== 404) throw await failure(res);       // 404 = already gone: just refresh the list
+  } catch (err) { alert("Could not delete: " + err.message); return; }
+  if (String(t.thread_id) === state.threadId) newChat();               // you deleted the chat you were looking at
+  await loadThreads();
+}
+
+function newChat(){
+  state.view++; state.threadId = null; state.pending = null;
+  state.sending = false; setBusy(false);
+  els.col.textContent = ""; showEmpty(); renderThreads(); closeSidebar();
+  els.input.value = ""; els.input.style.height = "auto"; els.input.focus();
+}
+
+/* Open a previous conversation: show its messages; whatever you type next continues it. */
+async function openThread(id, force = false){
+  id = String(id);
+  if (!force && id === state.threadId) { closeSidebar(); return; }
+  state.view++; const view = state.view;
+  state.threadId = id; state.pending = null;
+  state.sending = false; setBusy(false);
+  els.col.textContent = ""; renderThreads(); closeSidebar();
+  try {
+    const data = await getJSON("/threads/" + encodeURIComponent(id) + "/messages");
+    if (view !== state.view) return;
+    data.messages.forEach((m) => addMessage(m.role, m.content));
+    if (data.pending) showApproval(data.pending);   // the chat was waiting for your answer when you left
+    if (state.inflight.has(id)) {                    // this chat is still being answered: wait for it, then reload
+      state.sending = true; setBusy(true); addTyping("Still working on the last answer…");
+    }
+  } catch (err) {
+    if (view !== state.view) return;
+    if (err.status === 404) { newChat(); loadThreads(); return; }
+    addError(err.message, () => openThread(id, true));
+  }
+}
+
+/* One streamed turn. `path` is /chat (a new message) or /chat/resume (your answer to an approval card). */
+async function runTurn(path, body, retry){
+  state.sending = true; setBusy(true);
+  const view = state.view;
+  let tid = state.threadId;
+  if (tid) state.inflight.add(tid);
+  removeEmpty();
+  let typing = addTyping("Searching stores…"), status = "Searching stores…";
+  const t0 = Date.now();
+  const timer = setInterval(() => {                // slow lookups: show how long we've been waiting
+    const s = Math.round((Date.now() - t0) / 1000);
+    const label = typing.isConnected ? typing.querySelector(".label") : null;
+    if (label && s >= 4) label.textContent = status.replace(/…$/, "") + "… " + s + "s";
+  }, 1000);
+
+  let bubble = null, answer = "", finished = false, failed = null, asked = null, raf = 0;
+  const paint = () => { raf = 0; if (bubble) { bubble.innerHTML = renderMarkdown(answer); scrollDown(); } };
+  try {
+    const res = await fetch(API_BASE + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!res.ok) throw await failure(res);
+    await readEvents(res, (ev) => {                // keep reading even if you switched chats, so the stream ends cleanly
+      if (ev.thread_id) { tid = String(ev.thread_id); state.inflight.add(tid); if (view === state.view) state.threadId = tid; }
+      if (view !== state.view) return;             // you are looking at another chat now
+      if (ev.status) {                             // the model is calling a tool: whatever it said so far was narration
+        if (bubble) { bubble.remove(); bubble = null; }
+        answer = "";
+        if (!typing.isConnected) typing = addTyping(ev.status);
+        status = ev.status; typing.querySelector(".label").textContent = status;
+      }
+      else if (ev.text) {
+        if (!bubble) { typing.remove(); bubble = addMessage("assistant", ""); }
+        answer += ev.text;
+        if (!raf) raf = requestAnimationFrame(paint);
+      }
+      else if (ev.interrupt) asked = ev.interrupt;  // the bot is waiting for your approval
+      else if (ev.error) failed = ev.error;
+      else if (ev.done) finished = true;
+    });
+    cancelAnimationFrame(raf); paint();
+    if (view === state.view) {
+      if (typing.isConnected) typing.remove();
+      if (failed) addError(failed + " If it keeps failing, click “New conversation”.", retry);
+      else if (!finished) addError("The connection dropped before the answer finished.", retry);
+      else if (asked) showApproval(asked);
+      else if (!answer.trim()) addMessage("assistant", "Sorry, I couldn’t produce an answer. Please try again.");
+    }
+  } catch (err) {
+    if (typing.isConnected) typing.remove();
+    if (view === state.view) addError(err.message, retry);
+  } finally {
+    clearInterval(timer); cancelAnimationFrame(raf);
+    if (tid) state.inflight.delete(tid);
+    if (view === state.view) { state.sending = false; setBusy(false); }     // don't disturb the chat you moved to
+    await loadThreads();                                                      // the chat (and its title) now exists in the sidebar
+    if (view !== state.view && tid && state.threadId === tid) openThread(tid, true);   // you came back to it meanwhile: show the finished answer
+  }
+}
+
+async function send(text, retry = false){
+  text = text.trim();
+  if (!text || state.sending) return;
+  dismissApproval("Skipped");                      // typing something else ignores a question that was waiting
+  removeEmpty();
+  if (!retry) addMessage("user", text);
+  const body = { messages: text };                 // field name matches ChatRequest in app.py
+  if (state.threadId) body.thread_id = state.threadId;   // omitted for a new chat: the server makes a new thread
+  return runTurn("/chat", body, () => send(text, true));
+}
+
+/* Answer an approval card. Your choice appears in the chat as your message, then the bot carries on. */
+async function decide(approved){
+  if (state.sending || !state.pending || !state.threadId) return;
+  dismissApproval(approved ? "You chose: show alternatives" : "You chose: no alternatives");
+  addMessage("user", approved ? APPROVE_TEXT : DECLINE_TEXT);
+  const body = { thread_id: state.threadId, approved };
+  const again = () => runTurn("/chat/resume", body, again);
+  return runTurn("/chat/resume", body, again);
+}
+
+/* ---------- wiring ---------- */
+els.form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const v = els.input.value;
+  if (!v.trim() || state.sending) return;
+  els.input.value = ""; els.input.style.height = "auto";
+  send(v);
+});
+els.input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); els.form.requestSubmit(); }
+});
+els.input.addEventListener("input", () => {
+  els.input.style.height = "auto"; els.input.style.height = Math.min(els.input.scrollHeight, 160) + "px";
+});
+els.newBtn.addEventListener("click", newChat);
+els.menu.addEventListener("click", openSidebar);
+els.scrim.addEventListener("click", closeSidebar);
+
+showEmpty();
+loadThreads();
+els.input.focus();
+})();
+</script>
+</body>
+</html>

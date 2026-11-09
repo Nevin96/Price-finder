@@ -1,0 +1,86 @@
+[2026-11-02 15:47:01] [INFO] ==> Tool called: lowest_price for query: 'iphone 17 512 GB'
+[2026-11-02 15:47:01] [INFO] Executing Firecrawl search with query: 'iphone 17 512 GB buy online price India Amazon Flipkart Reliance Digital Vijay Sales'
+[2026-11-02 15:47:04] [INFO] Firecrawl returned 10 raw search items in 2.68s
+[2026-11-02 15:47:04] [INFO] Valid offer found: [Vijay Sales] ₹124,900 -> 'Buy Latest iPhone Online In India At Best Price | Vijay Sales' (https://www.vijaysales.com/c/iphones)
+[2026-11-02 15:47:04] [INFO] Item #2 skipped: non-retail / editorial page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-02 15:47:04] [INFO] Valid offer found: [Reliance Digital] ₹102,900 -> 'iPhone 17 | Online Electronic Shopping Store in India' (https://www.reliancedigital.in/collection/iphone-17)
+[2026-11-02 15:47:04] [INFO] Item #7 skipped: product match validation failed for 'Apple iPhone 17 Pro (512GB Storage, Silver) - Vijay Sales'
+[2026-11-02 15:47:04] [INFO] Item #9 skipped: product match validation failed for 'Apple iPhone 17 (256GB Storage, Black) - Vijay Sales'
+[2026-11-02 15:47:04] [INFO] Top store chosen: Reliance Digital at ₹102,900
+[2026-11-02 15:47:04] [INFO] Other stores: Vijay Sales at ₹124,900
+[2026-11-02 15:47:04] [INFO] lowest_price finished in 2.69s
+[2026-11-02 15:51:21] [INFO] ==> Tool called: lowest_price for query: 'iphone 19 pro'
+[2026-11-02 15:53:10] [INFO] ==> Tool called: lowest_price for query: 'iphone 19 pro'
+[2026-11-02 15:53:10] [INFO] Executing Firecrawl search with query: 'iphone 19 pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 15:53:13] [INFO] Firecrawl returned 10 items in 2.29s
+[2026-11-02 15:53:13] [INFO] Item #2 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/where-to-buy-iphone-17-pro-best-price)
+[2026-11-02 15:53:13] [INFO] Item #5 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-02 15:53:13] [INFO] Tool finished: status=no_match, alternatives=1
+[2026-11-02 15:53:36] [INFO] ==> Tool called: lowest_price for query: 'iphone 18 pro'
+[2026-11-02 15:53:36] [INFO] Executing Firecrawl search with query: 'iphone 18 pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 15:53:44] [WARNING] Firecrawl search exceeded timeout (8.0s).
+[2026-11-02 18:31:58] [INFO] ==> Tool called: lowest_price for query: 'nothing 4a pro'
+[2026-11-02 18:31:58] [INFO] Executing Firecrawl search with query: 'nothing 4a pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 18:32:00] [INFO] Firecrawl returned 10 items in 2.09s
+[2026-11-02 18:32:00] [INFO] Match found: [Reliance Digital] ₹54,999 -> 'Nothing Phone (4a) Pro 5G 128 GB, 8 GB RAM, Silver, Mobile Phone'
+[2026-11-02 18:32:00] [INFO] Item #5 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/nothing-4a-vs-nothing-4a-pro)
+[2026-11-02 18:32:00] [INFO] Match found: [Flipkart] ₹49,999 -> 'Nothing Phone (4a) Pro (128 GB Storage, 8 GB RAM ... - Flipkart'
+[2026-11-02 18:32:00] [INFO] Tool finished: status=found, best=Flipkart ₹49,999
+[2026-11-02 18:33:40] [INFO] ==> Tool called: lowest_price for query: 'iphone 19 pro'
+[2026-11-02 18:33:40] [INFO] Executing Firecrawl search with query: 'iphone 19 pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 18:33:41] [INFO] Firecrawl returned 10 items in 1.38s
+[2026-11-02 18:33:41] [INFO] Item #2 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/where-to-buy-iphone-17-pro-best-price)
+[2026-11-02 18:33:41] [INFO] Item #5 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-02 18:33:41] [INFO] Tool finished: status=no_match, alternatives=1
+[2026-11-02 18:34:31] [INFO] ==> Tool called: lowest_price for query: 'iphone 18 pro'
+[2026-11-02 18:34:31] [INFO] Executing Firecrawl search with query: 'iphone 18 pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 18:34:32] [INFO] Firecrawl returned 10 items in 1.33s
+[2026-11-02 18:34:32] [INFO] Item #0 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-18-pro-vs-18-pro-max)
+[2026-11-02 18:34:32] [INFO] Item #2 skipped: non-retail page (https://www.reliancedigital.in/sections/iphone-18-pro)
+[2026-11-02 18:34:32] [INFO] Match found: [Reliance Digital] ₹164,900 -> 'Buy Apple iPhone 18 Pro 256 GB, Black at Reliance Digital'
+[2026-11-02 18:34:32] [INFO] Match found: [Flipkart] ₹164,900 -> 'Apple iPhone 18 Pro (256 GB Storage) Online at Best Price On Flipkart.com'
+[2026-11-02 18:34:32] [INFO] Tool finished: status=found, best=Reliance Digital ₹164,900
+[2026-11-02 18:35:04] [INFO] ==> Tool called: lowest_price for query: 'iphone 17 512 gb'
+[2026-11-02 18:35:04] [INFO] Executing Firecrawl search with query: 'iphone 17 512 gb buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 18:35:06] [INFO] Firecrawl returned 10 items in 1.95s
+[2026-11-02 18:35:06] [INFO] Match found: [Reliance Digital] ₹102,900 -> 'iPhone 17 | Online Electronic Shopping Store in India'
+[2026-11-02 18:35:06] [INFO] Item #1 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-02 18:35:06] [INFO] Tool finished: status=found, best=Reliance Digital ₹102,900
+[2026-11-02 18:35:41] [INFO] ==> Tool called: lowest_price for query: 'iphone 17 512 gb'
+[2026-11-02 18:35:41] [INFO] Executing Firecrawl search with query: 'iphone 17 512 gb buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 18:35:42] [INFO] Firecrawl returned 10 items in 1.30s
+[2026-11-02 18:35:42] [INFO] Match found: [Reliance Digital] ₹102,900 -> 'iPhone 17 | Online Electronic Shopping Store in India'
+[2026-11-02 18:35:42] [INFO] Item #1 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-02 18:35:42] [INFO] Tool finished: status=found, best=Reliance Digital ₹102,900
+[2026-11-02 18:36:02] [INFO] ==> Tool called: lowest_price for query: 'iphone 17 512 gb'
+[2026-11-02 18:36:02] [INFO] Executing Firecrawl search with query: 'iphone 17 512 gb buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-02 18:36:03] [INFO] Firecrawl returned 10 items in 1.27s
+[2026-11-02 18:36:03] [INFO] Match found: [Reliance Digital] ₹102,900 -> 'iPhone 17 | Online Electronic Shopping Store in India'
+[2026-11-02 18:36:03] [INFO] Item #1 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-02 18:36:03] [INFO] Tool finished: status=found, best=Reliance Digital ₹102,900
+[2026-11-03 14:39:51] [INFO] ==> Tool called: lowest_price for query: 'iphone 17 512GB'
+[2026-11-03 14:39:51] [INFO] Executing Firecrawl search with query: 'iphone 17 512GB buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-03 14:39:54] [INFO] Firecrawl returned 10 items in 3.53s
+[2026-11-03 14:39:54] [INFO] Match found: [Reliance Digital] ₹102,900 -> 'iPhone 17 | Online Electronic Shopping Store in India'
+[2026-11-03 14:39:54] [INFO] Item #4 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-03 14:39:54] [INFO] Tool finished: status=found, best=Reliance Digital ₹102,900
+[2026-11-03 14:40:06] [INFO] ==> Tool called: lowest_price for query: 'iphone 19 pro'
+[2026-11-03 14:40:06] [INFO] Executing Firecrawl search with query: 'iphone 19 pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-03 14:40:07] [INFO] Firecrawl returned 10 items in 1.33s
+[2026-11-03 14:40:07] [INFO] Item #2 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/where-to-buy-iphone-17-pro-best-price)
+[2026-11-03 14:40:07] [INFO] Item #5 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-03 14:40:07] [INFO] Tool finished: status=no_match, alternatives=1
+[2026-11-03 14:40:16] [INFO] ==> Tool called: lowest_price for query: 'iPhone 17 Pro'
+[2026-11-03 14:40:16] [INFO] Executing Firecrawl search with query: 'iPhone 17 Pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-03 14:40:18] [INFO] Firecrawl returned 10 items in 1.97s
+[2026-11-03 14:40:18] [INFO] Match found: [Reliance Digital] ₹130,490 -> 'iPhone 17 Pro - Reliance Digital'
+[2026-11-03 14:40:18] [INFO] Item #2 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-price-india)
+[2026-11-03 14:40:18] [INFO] Item #4 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/iphone-17-pro-deals)
+[2026-11-03 14:40:18] [INFO] Tool finished: status=found, best=Reliance Digital ₹130,490
+[2026-11-03 14:40:40] [INFO] ==> Tool called: lowest_price for query: 'nothing 4a pro'
+[2026-11-03 14:40:40] [INFO] Executing Firecrawl search with query: 'nothing 4a pro buy online price India Amazon Flipkart Reliance Digital JioMart'
+[2026-11-03 14:40:43] [INFO] Firecrawl returned 10 items in 2.59s
+[2026-11-03 14:40:43] [INFO] Match found: [Reliance Digital] ₹54,999 -> 'Nothing Phone (4a) Pro 5G 128 GB, 8 GB RAM, Silver, Mobile Phone'
+[2026-11-03 14:40:43] [INFO] Item #5 skipped: non-retail page (https://www.reliancedigital.in/c/resource-center/bg/nothing-4a-vs-nothing-4a-pro)
+[2026-11-03 14:40:43] [INFO] Match found: [Flipkart] ₹49,999 -> 'Nothing Phone (4a) Pro (128 GB Storage, 8 GB RAM ... - Flipkart'
+[2026-11-03 14:40:43] [INFO] Tool finished: status=found, best=Flipkart ₹49,999
